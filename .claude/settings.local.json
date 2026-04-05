@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/api/courses)",
+      "Bash(npm run:*)",
+      "Bash(rm -rf node_modules package-lock.json)",
+      "Bash(npm install:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //PID 3144 //F)",
+      "Bash(taskkill //PID 14200 //F)",
+      "Bash(chmod +x \"A:/Lms project/Lms for college/lms-project/frontend/start.sh\")",
+      "Bash(bash \"A:/Lms project/Lms for college/lms-project/frontend/start.sh\")",
+      "Bash(taskkill //PID 11744 //F)"
+    ]
+  }
+}

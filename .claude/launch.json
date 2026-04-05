@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "React Frontend (Vite)",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["frontend/serve.cjs"],
+      "port": 3000
+    }
+  ]
+}
