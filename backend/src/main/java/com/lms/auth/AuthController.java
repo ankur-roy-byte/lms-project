@@ -24,6 +24,46 @@ public class AuthController {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
+    @PostMapping("/demo-login")
+    public ResponseEntity<?> demoLogin(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String password = request.get("password");
+
+        if (email == null || password == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Email and password required"));
+        }
+
+        // Simple demo credential check: password must equal the part before @
+        String expectedPassword = email.split("@")[0];
+        if (!password.equals(expectedPassword)) {
+            return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));
+        }
+
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(404).body(Map.of("error", "User not found"));
+        }
+
+        String token = jwtService.generateToken(user.getId(), user.getEmail(), user.getRole().toString());
+
+        UserDTO userDTO = UserDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .avatarUrl(user.getAvatarUrl())
+                .role(user.getRole().toString())
+                .createdAt(user.getCreatedAt())
+                .build();
+
+        return ResponseEntity.ok(
+                AuthResponse.builder()
+                        .token(token)
+                        .user(userDTO)
+                        .message("Demo login successful")
+                        .build()
+        );
+    }
+
     @PostMapping("/google")
     public ResponseEntity<?> loginWithGoogle(@RequestBody Map<String, String> request) {
         String tokenId = request.get("tokenId");

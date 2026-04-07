@@ -1,14 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/Toast';
 import { BRAND } from '../data/constants';
 
+const DEMO_ACCOUNTS = [
+  { label: 'Admin', email: 'admin@zenved.com', password: 'admin', color: 'bg-red-500/20 text-red-400 border-red-500/30' },
+  { label: 'Instructor', email: 'instructor@zenved.com', password: 'instructor', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+  { label: 'Student', email: 'student@zenved.com', password: 'student', color: 'bg-green-500/20 text-green-400 border-green-500/30' },
+];
+
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
+  const { login, demoLogin, isAuthenticated } = useAuth();
   const { success, error } = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [demoLoading, setDemoLoading] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -29,6 +38,30 @@ const LoginPage = () => {
 
   const handleGoogleError = () => {
     error('Google login failed. Please try again.');
+  };
+
+  const handleDemoLogin = async (e) => {
+    e?.preventDefault();
+    if (!email || !password) {
+      error('Please enter email and password');
+      return;
+    }
+    try {
+      setDemoLoading(true);
+      await demoLogin(email, password);
+      success('Login successful!');
+      navigate('/dashboard');
+    } catch (err) {
+      console.error('Demo login failed:', err);
+      error(err?.response?.data?.error || 'Login failed. Please try again.');
+    } finally {
+      setDemoLoading(false);
+    }
+  };
+
+  const selectDemoAccount = (account) => {
+    setEmail(account.email);
+    setPassword(account.password);
   };
 
   return (
@@ -62,6 +95,59 @@ const LoginPage = () => {
             <div className="border-t border-white/[0.07]"></div>
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <span className="bg-brand-surface px-3 text-text-muted text-xs">Sign in to your account</span>
+            </div>
+          </div>
+
+          {/* Demo Login Form */}
+          <form onSubmit={handleDemoLogin} className="space-y-4 mb-6">
+            <div>
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 bg-brand-bg border border-white/[0.1] rounded-xl text-white placeholder-text-muted text-sm focus:outline-none focus:border-accent transition-colors"
+              />
+            </div>
+            <div>
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 bg-brand-bg border border-white/[0.1] rounded-xl text-white placeholder-text-muted text-sm focus:outline-none focus:border-accent transition-colors"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={demoLoading}
+              className="w-full py-3 bg-accent hover:bg-accent/90 text-brand-bg font-semibold rounded-xl transition-colors disabled:opacity-50 text-sm"
+            >
+              {demoLoading ? 'Signing in...' : 'Sign In'}
+            </button>
+          </form>
+
+          {/* Quick Demo Accounts */}
+          <div className="mb-6">
+            <p className="text-xs text-text-muted text-center mb-3">Quick demo access</p>
+            <div className="flex gap-2">
+              {DEMO_ACCOUNTS.map((account) => (
+                <button
+                  key={account.label}
+                  onClick={() => selectDemoAccount(account)}
+                  className={`flex-1 py-2 px-3 rounded-lg border text-xs font-medium transition-colors hover:opacity-80 ${account.color}`}
+                >
+                  {account.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="relative mb-6">
+            <div className="border-t border-white/[0.07]"></div>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <span className="bg-brand-surface px-3 text-text-muted text-xs">or</span>
             </div>
           </div>
 
