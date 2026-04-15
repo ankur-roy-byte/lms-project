@@ -12,7 +12,11 @@ export const AuthProvider = ({ children }) => {
     const initializeAuth = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        if (token) {
+        const storedUser = localStorage.getItem('user');
+        if (token && token.startsWith('demo-token-') && storedUser) {
+          setUser(JSON.parse(storedUser));
+          setIsAuthenticated(true);
+        } else if (token) {
           const userData = await authApi.getCurrentUser();
           setUser(userData);
           setIsAuthenticated(true);
@@ -47,8 +51,21 @@ export const AuthProvider = ({ children }) => {
   };
 
   const demoLogin = async (email, password) => {
+    setLoading(true);
+    // Build a mock user purely on the frontend so the demo works without a backend.
+    const roleFromEmail = (email || '').split('@')[0].toUpperCase();
+    const role = ['ADMIN', 'INSTRUCTOR', 'STUDENT'].includes(roleFromEmail) ? roleFromEmail : 'STUDENT';
+    const mockUser = {
+      id: `demo-${role.toLowerCase()}`,
+      email,
+      name: role.charAt(0) + role.slice(1).toLowerCase() + ' User',
+      role,
+      profilePicture: null,
+    };
+    const mockResponse = { token: `demo-token-${role.toLowerCase()}`, user: mockUser };
+
     try {
-      setLoading(true);
+      // Try real backend first; fall back to mock if unreachable.
       const response = await authApi.demoLogin(email, password);
       localStorage.setItem('authToken', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
@@ -56,8 +73,12 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
       return response;
     } catch (error) {
-      console.error('Demo login failed:', error);
-      throw error;
+      console.warn('Backend unreachable, using offline demo login:', error?.message);
+      localStorage.setItem('authToken', mockResponse.token);
+      localStorage.setItem('user', JSON.stringify(mockResponse.user));
+      setUser(mockResponse.user);
+      setIsAuthenticated(true);
+      return mockResponse;
     } finally {
       setLoading(false);
     }
