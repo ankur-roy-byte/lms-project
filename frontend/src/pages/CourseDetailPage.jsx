@@ -63,7 +63,8 @@ const CourseDetailPage = () => {
     };
 
     fetchCourseData();
-  }, [id, user, error]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, user]);
 
   const handleEnroll = async () => {
     if (!user) {

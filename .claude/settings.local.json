@@ -12,7 +12,8 @@
       "Bash(taskkill //PID 14200 //F)",
       "Bash(chmod +x \"A:/Lms project/Lms for college/lms-project/frontend/start.sh\")",
       "Bash(bash \"A:/Lms project/Lms for college/lms-project/frontend/start.sh\")",
-      "Bash(taskkill //PID 11744 //F)"
+      "Bash(taskkill //PID 11744 //F)",
+      "Bash(python -c ':*)"
     ]
   }
 }

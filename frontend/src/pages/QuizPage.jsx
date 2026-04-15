@@ -38,7 +38,8 @@ const QuizPage = () => {
     };
 
     fetchQuiz();
-  }, [quizId, error]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quizId]);
 
   // Timer effect
   useEffect(() => {

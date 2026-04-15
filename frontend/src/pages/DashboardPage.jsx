@@ -56,7 +56,8 @@ const DashboardPage = () => {
     };
 
     fetchDashboard();
-  }, [user, error]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const displayName = user?.name?.split(' ')[0] || 'Student';
 

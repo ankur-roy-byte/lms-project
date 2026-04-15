@@ -40,7 +40,8 @@ const CourseCatalogPage = () => {
     }, 500);
 
     return () => clearTimeout(debounceTimer);
-  }, [searchTerm, selectedCategory, currentPage, error]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm, selectedCategory, currentPage]);
 
   return (
     <div className="min-h-screen bg-brand-bg">
