@@ -8,23 +8,22 @@ const ProgressBar = ({ percentage = 0, label = 'Progress', showLabel = true }) =
     <div className="w-full">
       {showLabel && (
         <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium text-gray-700">{label}</span>
-          <span className="text-sm font-semibold text-gray-900">{Math.round(clampedPercentage)}%</span>
+          <span className="text-sm font-medium text-text-secondary">{label}</span>
+          <span className="text-sm font-semibold text-accent font-syne">{Math.round(clampedPercentage)}%</span>
         </div>
       )}
-      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden shadow-sm">
+      <div className="progress-bar-track">
         <div
           className={`h-full rounded-full transition-all duration-500 ${
-            isComplete ? 'bg-green-500' : 'bg-primary-600'
+            isComplete ? 'bg-success' : 'bg-accent'
           }`}
           style={{ width: `${clampedPercentage}%` }}
         >
-          {/* Animated shine effect */}
-          <div className="h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
+          <div className="h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-pulse rounded-full"></div>
         </div>
       </div>
       {isComplete && (
-        <p className="text-xs text-green-600 font-medium mt-1">Course Completed!</p>
+        <p className="text-xs text-success font-medium mt-1">Course Completed!</p>
       )}
     </div>
   );

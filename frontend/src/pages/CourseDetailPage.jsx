@@ -156,7 +156,7 @@ const CourseDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-brand-bg">
         <div className="spinner"></div>
       </div>
     );
@@ -164,55 +164,55 @@ const CourseDetailPage = () => {
 
   if (!course) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-600 text-lg">Course not found</p>
+      <div className="text-center py-12 min-h-screen bg-brand-bg">
+        <p className="text-text-secondary text-lg">Course not found</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-brand-bg">
       {/* Course Hero */}
       {!isEnrolled && (
-        <div className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-12">
+        <div className="bg-brand-surface border-b border-white/[0.08] py-12">
           <div className="max-w-7xl mx-auto px-4">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
               <div className="lg:col-span-2">
-                <h1 className="text-4xl font-bold mb-4">{course.title}</h1>
-                <p className="text-lg text-primary-100 mb-4">{course.description}</p>
+                <h1 className="text-4xl font-bold text-white font-syne mb-4">{course.title}</h1>
+                <p className="text-lg text-text-secondary mb-4">{course.description}</p>
 
-                <div className="flex flex-wrap items-center gap-6 text-sm mb-8">
+                <div className="flex flex-wrap items-center gap-6 text-sm text-text-muted mb-8">
                   <div className="flex items-center gap-2">
                     <Users className="w-5 h-5" />
                     <span>{course.enrollmentCount} students</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Star className="w-5 h-5 fill-yellow-300" />
+                    <Star className="w-5 h-5 fill-accent text-accent" />
                     <span>{course.rating?.toFixed(1) || 'N/A'}</span>
                   </div>
                   <div>
-                    <span className="font-semibold">Instructor:</span> {course.instructorName}
+                    <span className="font-semibold text-text-secondary">Instructor:</span> {course.instructorName}
                   </div>
                 </div>
               </div>
 
               {/* Enrollment Card */}
-              <div className="bg-white text-gray-900 rounded-lg shadow-xl p-6 h-fit">
-                <div className="text-3xl font-bold mb-4">
+              <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-6 h-fit">
+                <div className="text-3xl font-bold font-syne mb-4">
                   {course.price === 0 || !course.price ? (
-                    <span className="text-green-600">Free</span>
+                    <span className="text-success">Free</span>
                   ) : (
-                    <>₹{course.price}</>
+                    <span className="text-white">₹{course.price}</span>
                   )}
                 </div>
                 <button
                   onClick={handleEnroll}
                   disabled={processingPayment}
-                  className="w-full btn-primary mb-3 disabled:opacity-50"
+                  className="w-full bg-accent hover:bg-accent-hover text-brand-bg font-semibold py-3 rounded-xl transition-colors mb-3 disabled:opacity-50 text-sm"
                 >
                   {processingPayment ? 'Processing...' : 'Enroll Now'}
                 </button>
-                <button className="w-full btn-outline">
+                <button className="w-full border border-white/[0.1] text-text-secondary hover:bg-white/[0.04] py-3 rounded-xl transition-colors text-sm">
                   Share Course
                 </button>
               </div>
@@ -226,11 +226,11 @@ const CourseDetailPage = () => {
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-gray-900">Your Progress</h2>
+              <h2 className="text-2xl font-bold text-white font-syne">Your Progress</h2>
               {progress === 100 && (
                 <button
                   onClick={handleGetCertificate}
-                  className="flex items-center gap-2 btn-primary"
+                  className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-brand-bg font-semibold px-4 py-2 rounded-xl transition-colors text-sm"
                 >
                   <Award className="w-4 h-4" />
                   Get Certificate
@@ -247,25 +247,25 @@ const CourseDetailPage = () => {
                 <>
                   <VideoPlayer youtubeUrl={currentLesson.videoUrl} title={currentLesson.title} />
 
-                  <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">{currentLesson.title}</h2>
-                    <p className="text-gray-600 mb-6">{currentLesson.description}</p>
+                  <div className="mt-8 bg-brand-surface border border-white/[0.08] rounded-xl p-6">
+                    <h2 className="text-2xl font-bold text-white font-syne mb-4">{currentLesson.title}</h2>
+                    <p className="text-text-secondary mb-6">{currentLesson.description}</p>
 
                     <div className="flex flex-wrap gap-4 mb-6">
-                      <div className="flex items-center gap-2 text-gray-700">
+                      <div className="flex items-center gap-2 text-text-muted">
                         <Clock className="w-5 h-5" />
                         <span>{currentLesson.duration} mins</span>
                       </div>
                       <div className="flex items-center gap-2">
                         {completedLessons.includes(currentLesson.id) ? (
                           <>
-                            <CheckCircle className="w-5 h-5 text-green-600" />
-                            <span className="text-green-600 font-medium">Completed</span>
+                            <CheckCircle className="w-5 h-5 text-success" />
+                            <span className="text-success font-medium">Completed</span>
                           </>
                         ) : (
                           <>
-                            <div className="w-5 h-5 rounded-full border-2 border-gray-400"></div>
-                            <span className="text-gray-600">Not completed</span>
+                            <div className="w-5 h-5 rounded-full border-2 border-white/[0.2]"></div>
+                            <span className="text-text-muted">Not completed</span>
                           </>
                         )}
                       </div>
@@ -274,7 +274,7 @@ const CourseDetailPage = () => {
                     {!completedLessons.includes(currentLesson.id) && (
                       <button
                         onClick={() => handleMarkComplete(currentLesson.id)}
-                        className="btn-primary"
+                        className="bg-accent hover:bg-accent-hover text-brand-bg font-semibold px-6 py-2 rounded-xl transition-colors text-sm"
                       >
                         Mark as Complete
                       </button>
@@ -284,7 +284,7 @@ const CourseDetailPage = () => {
                       <div className="mt-6">
                         <button
                           onClick={() => navigate(`/quiz/${currentLesson.quizId}`)}
-                          className="btn-outline flex items-center gap-2"
+                          className="border border-white/[0.1] text-text-secondary hover:bg-white/[0.04] px-4 py-2 rounded-xl transition-colors text-sm flex items-center gap-2"
                         >
                           <Play className="w-4 h-4" />
                           Take Quiz

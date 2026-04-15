@@ -84,7 +84,6 @@ const QuizPage = () => {
     try {
       setSubmitting(true);
 
-      // Prepare answers for submission
       const formattedAnswers = questions.map((q) => ({
         questionId: q.id,
         selectedOption: selectedAnswers[q.id] || null,
@@ -109,7 +108,7 @@ const QuizPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-brand-bg">
         <div className="spinner"></div>
       </div>
     );
@@ -119,44 +118,44 @@ const QuizPage = () => {
     const isPassed = result.score >= (quiz?.passingScore || 60);
 
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4">
+        <div className="bg-brand-surface border border-white/[0.08] rounded-2xl p-8 max-w-md w-full text-center">
           <div className={`w-16 h-16 rounded-full mx-auto mb-6 flex items-center justify-center ${
-            isPassed ? 'bg-green-100' : 'bg-red-100'
+            isPassed ? 'bg-success/[0.15]' : 'bg-red-500/[0.15]'
           }`}>
-            <Award className={`w-8 h-8 ${isPassed ? 'text-green-600' : 'text-red-600'}`} />
+            <Award className={`w-8 h-8 ${isPassed ? 'text-success' : 'text-red-400'}`} />
           </div>
 
-          <h2 className={`text-3xl font-bold mb-2 ${isPassed ? 'text-green-600' : 'text-red-600'}`}>
+          <h2 className={`text-3xl font-bold font-syne mb-2 ${isPassed ? 'text-success' : 'text-red-400'}`}>
             {isPassed ? 'Passed!' : 'Not Passed'}
           </h2>
 
-          <div className="bg-gray-50 rounded-lg p-6 my-6">
-            <p className="text-gray-600 mb-2">Your Score</p>
-            <p className="text-4xl font-bold text-gray-900">{result.score}%</p>
-            <p className="text-sm text-gray-600 mt-2">
+          <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-6 my-6">
+            <p className="text-text-muted mb-2">Your Score</p>
+            <p className="text-4xl font-bold text-white font-syne">{result.score}%</p>
+            <p className="text-sm text-text-muted mt-2">
               Passing Score: {quiz?.passingScore || 60}%
             </p>
           </div>
 
           <div className="space-y-3 mb-6">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Correct Answers:</span>
-              <span className="font-bold text-green-600">{result.correctAnswers}</span>
+              <span className="text-text-muted">Correct Answers:</span>
+              <span className="font-bold text-success">{result.correctAnswers}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Total Questions:</span>
-              <span className="font-bold text-gray-900">{result.totalQuestions}</span>
+              <span className="text-text-muted">Total Questions:</span>
+              <span className="font-bold text-white">{result.totalQuestions}</span>
             </div>
           </div>
 
           <div className="space-y-3">
             {isPassed && (
               <>
-                <p className="text-green-600 font-medium">Course completed successfully!</p>
+                <p className="text-success font-medium">Course completed successfully!</p>
                 <button
                   onClick={() => navigate('/dashboard')}
-                  className="w-full btn-primary"
+                  className="w-full bg-accent hover:bg-accent-hover text-brand-bg font-semibold py-3 rounded-xl transition-colors text-sm"
                 >
                   Back to Dashboard
                 </button>
@@ -164,14 +163,14 @@ const QuizPage = () => {
             )}
             {!isPassed && (
               <>
-                <p className="text-gray-600">Please review the course material and try again.</p>
+                <p className="text-text-muted">Please review the course material and try again.</p>
                 <button
                   onClick={() => {
                     setResult(null);
                     setCurrentQuestionIndex(0);
                     setSelectedAnswers({});
                   }}
-                  className="w-full btn-primary"
+                  className="w-full bg-accent hover:bg-accent-hover text-brand-bg font-semibold py-3 rounded-xl transition-colors text-sm"
                 >
                   Retake Quiz
                 </button>
@@ -184,19 +183,19 @@ const QuizPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-brand-bg">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 py-6 sticky top-0 z-10">
+      <div className="bg-brand-surface border-b border-white/[0.08] py-6 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{quiz?.title}</h1>
-            <p className="text-sm text-gray-600 mt-1">
+            <h1 className="text-2xl font-bold text-white font-syne">{quiz?.title}</h1>
+            <p className="text-sm text-text-muted mt-1">
               Question {currentQuestionIndex + 1} of {questions.length}
             </p>
           </div>
           {timeLeft !== null && (
-            <div className={`text-lg font-bold ${timeLeft <= 300 ? 'text-red-600' : 'text-gray-900'}`}>
-              ⏱ {formatTime(timeLeft)}
+            <div className={`text-lg font-bold font-syne ${timeLeft <= 300 ? 'text-red-400' : 'text-white'}`}>
+              {formatTime(timeLeft)}
             </div>
           )}
         </div>
@@ -207,14 +206,14 @@ const QuizPage = () => {
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-gray-600">Progress</span>
-            <span className="text-sm font-medium text-gray-900">
+            <span className="text-sm font-medium text-text-muted">Progress</span>
+            <span className="text-sm font-medium text-accent font-syne">
               {Math.round((currentQuestionIndex / questions.length) * 100)}%
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="progress-bar-track">
             <div
-              className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+              className="progress-bar-fill transition-all duration-300"
               style={{ width: `${(currentQuestionIndex / questions.length) * 100}%` }}
             ></div>
           </div>
@@ -234,10 +233,10 @@ const QuizPage = () => {
               <button
                 onClick={handlePrevious}
                 disabled={currentQuestionIndex === 0}
-                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-colors ${
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm transition-colors ${
                   currentQuestionIndex === 0
-                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                    : 'bg-gray-200 text-gray-900 hover:bg-gray-300'
+                    ? 'bg-white/[0.04] text-text-muted cursor-not-allowed'
+                    : 'bg-white/[0.06] text-white hover:bg-white/[0.1]'
                 }`}
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -248,7 +247,7 @@ const QuizPage = () => {
                 <button
                   onClick={handleSubmitQuiz}
                   disabled={submitting}
-                  className="flex items-center gap-2 btn-primary disabled:opacity-50"
+                  className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-brand-bg font-semibold px-6 py-3 rounded-xl transition-colors text-sm disabled:opacity-50"
                 >
                   <Send className="w-4 h-4" />
                   {submitting ? 'Submitting...' : 'Submit Quiz'}
@@ -256,7 +255,7 @@ const QuizPage = () => {
               ) : (
                 <button
                   onClick={handleNext}
-                  className="flex items-center gap-2 btn-primary"
+                  className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-brand-bg font-semibold px-6 py-3 rounded-xl transition-colors text-sm"
                 >
                   Next
                   <ChevronRight className="w-4 h-4" />
@@ -270,12 +269,12 @@ const QuizPage = () => {
                 <button
                   key={q.id}
                   onClick={() => setCurrentQuestionIndex(idx)}
-                  className={`w-10 h-10 rounded-lg font-medium transition-colors ${
+                  className={`w-10 h-10 rounded-lg font-medium text-sm transition-colors ${
                     idx === currentQuestionIndex
-                      ? 'bg-primary-600 text-white'
+                      ? 'bg-accent text-brand-bg'
                       : selectedAnswers[q.id]
-                        ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        ? 'bg-success/[0.15] text-success hover:bg-success/[0.25]'
+                        : 'bg-white/[0.04] text-text-muted hover:bg-white/[0.08]'
                   }`}
                 >
                   {idx + 1}

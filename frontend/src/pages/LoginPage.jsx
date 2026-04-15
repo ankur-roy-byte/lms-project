@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/Toast';
 import { BRAND } from '../data/constants';
@@ -13,7 +12,7 @@ const DEMO_ACCOUNTS = [
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login, demoLogin, isAuthenticated } = useAuth();
+  const { demoLogin, isAuthenticated } = useAuth();
   const { success, error } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,19 +24,18 @@ const LoginPage = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleGoogleSuccess = async (credentialResponse) => {
+  const doLogin = async (loginEmail, loginPassword) => {
     try {
-      await login(credentialResponse.credential);
+      setDemoLoading(true);
+      await demoLogin(loginEmail, loginPassword);
       success('Login successful!');
       navigate('/dashboard');
     } catch (err) {
       console.error('Login failed:', err);
-      error('Login failed. Please try again.');
+      error(err?.response?.data?.error || 'Login failed. Please try again.');
+    } finally {
+      setDemoLoading(false);
     }
-  };
-
-  const handleGoogleError = () => {
-    error('Google login failed. Please try again.');
   };
 
   const handleDemoLogin = async (e) => {
@@ -46,30 +44,19 @@ const LoginPage = () => {
       error('Please enter email and password');
       return;
     }
-    try {
-      setDemoLoading(true);
-      await demoLogin(email, password);
-      success('Login successful!');
-      navigate('/dashboard');
-    } catch (err) {
-      console.error('Demo login failed:', err);
-      error(err?.response?.data?.error || 'Login failed. Please try again.');
-    } finally {
-      setDemoLoading(false);
-    }
+    await doLogin(email, password);
   };
 
   const selectDemoAccount = (account) => {
     setEmail(account.email);
     setPassword(account.password);
+    doLogin(account.email, account.password);
   };
 
   return (
     <div className="min-h-screen bg-brand-bg flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        {/* Card */}
         <div className="bg-brand-surface border border-white/[0.08] rounded-2xl shadow-2xl p-8">
-          {/* Logo & Branding */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-gradient-to-br from-accent to-danger rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
               <span className="text-2xl">🎓</span>
@@ -80,44 +67,53 @@ const LoginPage = () => {
             <p className="text-text-muted text-sm">{BRAND.tagline}</p>
           </div>
 
-          {/* Hero Text */}
           <div className="text-center mb-8">
             <p className="text-text-primary font-medium mb-1 text-sm">
-              Master new skills at your own pace
+              One-click demo access
             </p>
             <p className="text-xs text-text-muted">
-              Join students learning from expert instructors
+              Pick a role below to enter the dashboard
             </p>
           </div>
 
-          {/* Divider */}
-          <div className="relative mb-8">
-            <div className="border-t border-white/[0.07]"></div>
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <span className="bg-brand-surface px-3 text-text-muted text-xs">Sign in to your account</span>
+          {/* Quick Demo Accounts — one-click login */}
+          <div className="mb-6">
+            <div className="flex gap-2">
+              {DEMO_ACCOUNTS.map((account) => (
+                <button
+                  key={account.label}
+                  onClick={() => selectDemoAccount(account)}
+                  disabled={demoLoading}
+                  className={`flex-1 py-3 px-3 rounded-xl border text-sm font-semibold transition-colors hover:opacity-80 disabled:opacity-50 ${account.color}`}
+                >
+                  {demoLoading ? '...' : `Enter as ${account.label}`}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Demo Login Form */}
+          <div className="relative mb-6">
+            <div className="border-t border-white/[0.07]"></div>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <span className="bg-brand-surface px-3 text-text-muted text-xs">or sign in manually</span>
+            </div>
+          </div>
+
           <form onSubmit={handleDemoLogin} className="space-y-4 mb-6">
-            <div>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-brand-bg border border-white/[0.1] rounded-xl text-white placeholder-text-muted text-sm focus:outline-none focus:border-accent transition-colors"
-              />
-            </div>
-            <div>
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-brand-bg border border-white/[0.1] rounded-xl text-white placeholder-text-muted text-sm focus:outline-none focus:border-accent transition-colors"
-              />
-            </div>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 bg-brand-bg border border-white/[0.1] rounded-xl text-white placeholder-text-muted text-sm focus:outline-none focus:border-accent transition-colors"
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 bg-brand-bg border border-white/[0.1] rounded-xl text-white placeholder-text-muted text-sm focus:outline-none focus:border-accent transition-colors"
+            />
             <button
               type="submit"
               disabled={demoLoading}
@@ -127,42 +123,6 @@ const LoginPage = () => {
             </button>
           </form>
 
-          {/* Quick Demo Accounts */}
-          <div className="mb-6">
-            <p className="text-xs text-text-muted text-center mb-3">Quick demo access</p>
-            <div className="flex gap-2">
-              {DEMO_ACCOUNTS.map((account) => (
-                <button
-                  key={account.label}
-                  onClick={() => selectDemoAccount(account)}
-                  className={`flex-1 py-2 px-3 rounded-lg border text-xs font-medium transition-colors hover:opacity-80 ${account.color}`}
-                >
-                  {account.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="relative mb-6">
-            <div className="border-t border-white/[0.07]"></div>
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <span className="bg-brand-surface px-3 text-text-muted text-xs">or</span>
-            </div>
-          </div>
-
-          {/* Google Sign In */}
-          <div className="mb-6 flex justify-center">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={handleGoogleError}
-              width="100%"
-              text="signin_with"
-              theme="filled_black"
-            />
-          </div>
-
-          {/* Features */}
           <div className="space-y-3 pt-6 border-t border-white/[0.07]">
             <h3 className="font-semibold text-accent text-sm mb-3">Why join {BRAND.name}?</h3>
             <div className="space-y-2">
@@ -179,14 +139,8 @@ const LoginPage = () => {
               ))}
             </div>
           </div>
-
-          {/* Footer Text */}
-          <p className="text-xs text-text-muted text-center mt-6">
-            By signing in, you agree to our Terms of Service and Privacy Policy
-          </p>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mt-8">
           <div className="text-center">
             <p className="text-2xl font-extrabold text-accent font-syne">10K+</p>

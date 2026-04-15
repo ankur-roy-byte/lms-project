@@ -3,8 +3,8 @@ import { CheckCircle, Circle, Play } from 'lucide-react';
 
 const Sidebar = ({ lessons, currentLessonId, onSelectLesson, completedLessons = [] }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 h-fit sticky top-20">
-      <h3 className="font-bold text-gray-900 mb-4 text-lg">Course Content</h3>
+    <div className="bg-brand-surface border border-white/[0.08] rounded-xl p-6 h-fit sticky top-20">
+      <h3 className="font-bold text-white mb-4 text-lg font-syne">Course Content</h3>
 
       <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
         {lessons.map((lesson, index) => {
@@ -17,18 +17,18 @@ const Sidebar = ({ lessons, currentLessonId, onSelectLesson, completedLessons = 
               onClick={() => onSelectLesson(lesson)}
               className={`w-full flex items-start gap-3 p-3 rounded-lg transition-colors text-left ${
                 isCurrent
-                  ? 'bg-primary-100 border-l-4 border-primary-600'
-                  : 'hover:bg-gray-50'
+                  ? 'bg-accent/[0.1] border-l-4 border-accent'
+                  : 'hover:bg-white/[0.04]'
               }`}
             >
               {/* Icon */}
               <div className="mt-1">
                 {isCompleted ? (
-                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
                 ) : isCurrent ? (
-                  <Play className="w-5 h-5 text-primary-600 flex-shrink-0" />
+                  <Play className="w-5 h-5 text-accent flex-shrink-0" />
                 ) : (
-                  <Circle className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                  <Circle className="w-5 h-5 text-text-muted flex-shrink-0" />
                 )}
               </div>
 
@@ -36,12 +36,12 @@ const Sidebar = ({ lessons, currentLessonId, onSelectLesson, completedLessons = 
               <div className="flex-1 min-w-0">
                 <p
                   className={`text-sm font-medium truncate ${
-                    isCurrent ? 'text-primary-600' : 'text-gray-900'
+                    isCurrent ? 'text-accent' : 'text-text-primary'
                   }`}
                 >
                   {index + 1}. {lesson.title}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-text-muted mt-1">
                   {lesson.duration} mins
                 </p>
               </div>

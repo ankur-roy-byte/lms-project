@@ -71,19 +71,21 @@ const LiveSessionPage = () => {
     }
   };
 
+  const inputClass = 'w-full px-4 py-3 bg-brand-bg border border-white/[0.1] rounded-xl text-white placeholder-text-muted text-sm focus:outline-none focus:border-accent transition-colors';
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-brand-bg">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 py-8">
+      <div className="bg-brand-surface border-b border-white/[0.08] py-8">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Live Sessions</h1>
-            <p className="text-gray-600 mt-2">Join interactive learning sessions with instructors</p>
+            <h1 className="text-3xl font-bold text-white font-syne">Live Sessions</h1>
+            <p className="text-text-muted mt-2">Join interactive learning sessions with instructors</p>
           </div>
           {user?.role === 'INSTRUCTOR' && (
             <button
               onClick={() => setShowForm(!showForm)}
-              className="flex items-center gap-2 btn-primary"
+              className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-brand-bg font-semibold px-4 py-2 rounded-xl transition-colors text-sm"
             >
               <Plus className="w-5 h-5" />
               Schedule Session
@@ -95,59 +97,59 @@ const LiveSessionPage = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* New Session Form */}
         {showForm && user?.role === 'INSTRUCTOR' && (
-          <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+          <div className="bg-brand-surface border border-white/[0.08] rounded-xl p-8 mb-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Schedule New Session</h2>
+              <h2 className="text-2xl font-bold text-white font-syne">Schedule New Session</h2>
               <button
                 onClick={() => setShowForm(false)}
-                className="p-1 hover:bg-gray-100 rounded-lg"
+                className="p-1 hover:bg-white/[0.06] rounded-lg"
               >
-                <X className="w-6 h-6 text-gray-500" />
+                <X className="w-6 h-6 text-text-muted" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-text-secondary mb-2">
                     Session Title *
                   </label>
                   <input
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    placeholder="e.g., React Hooks Deep Dive"
-                    className="input-field"
+                    placeholder="e.g., AI Readiness — Live Q&A"
+                    className={inputClass}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-text-secondary mb-2">
                     Course Name *
                   </label>
                   <input
                     type="text"
                     value={formData.courseName}
                     onChange={(e) => setFormData({ ...formData, courseName: e.target.value })}
-                    placeholder="e.g., Advanced React"
-                    className="input-field"
+                    placeholder="e.g., AI Readiness Program"
+                    className={inputClass}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-text-secondary mb-2">
                     Date & Time *
                   </label>
                   <input
                     type="datetime-local"
                     value={formData.scheduledAt}
                     onChange={(e) => setFormData({ ...formData, scheduledAt: e.target.value })}
-                    className="input-field"
+                    className={inputClass}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-text-secondary mb-2">
                     Duration (minutes) *
                   </label>
                   <input
@@ -158,12 +160,12 @@ const LiveSessionPage = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, duration: parseInt(e.target.value) })
                     }
-                    className="input-field"
+                    className={inputClass}
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-text-secondary mb-2">
                     Meeting Link *
                   </label>
                   <input
@@ -171,19 +173,19 @@ const LiveSessionPage = () => {
                     value={formData.meetingLink}
                     onChange={(e) => setFormData({ ...formData, meetingLink: e.target.value })}
                     placeholder="https://meet.google.com/..."
-                    className="input-field"
+                    className={inputClass}
                   />
                 </div>
               </div>
 
               <div className="flex gap-4">
-                <button type="submit" className="btn-primary">
+                <button type="submit" className="bg-accent hover:bg-accent-hover text-brand-bg font-semibold px-6 py-3 rounded-xl transition-colors text-sm">
                   Schedule Session
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="btn-secondary"
+                  className="border border-white/[0.1] text-text-secondary hover:bg-white/[0.04] px-6 py-3 rounded-xl transition-colors text-sm"
                 >
                   Cancel
                 </button>
@@ -208,9 +210,9 @@ const LiveSessionPage = () => {
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-md p-12 text-center">
-            <p className="text-gray-600 text-lg mb-4">No sessions available</p>
-            <p className="text-gray-500">
+          <div className="bg-brand-surface border border-white/[0.08] rounded-xl p-12 text-center">
+            <p className="text-text-secondary text-lg mb-4">No sessions available</p>
+            <p className="text-text-muted">
               {user?.role === 'INSTRUCTOR'
                 ? 'Schedule your first session to get started'
                 : 'Check back soon for upcoming live sessions'}

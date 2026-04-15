@@ -23,17 +23,17 @@ const VideoPlayer = ({ youtubeUrl, title = 'Video Player' }) => {
 
   if (!embedUrl) {
     return (
-      <div className="w-full bg-gray-900 rounded-lg flex items-center justify-center aspect-video">
+      <div className="w-full bg-brand-surface border border-white/[0.08] rounded-xl flex items-center justify-center aspect-video">
         <div className="text-center">
           <p className="text-white mb-2">Invalid video URL</p>
-          <p className="text-gray-400 text-sm">Please check the video URL and try again.</p>
+          <p className="text-text-muted text-sm">Please check the video URL and try again.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full rounded-lg overflow-hidden shadow-lg">
+    <div className="w-full rounded-xl overflow-hidden border border-white/[0.08]">
       <iframe
         width="100%"
         height="600"

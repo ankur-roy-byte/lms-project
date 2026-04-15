@@ -3,6 +3,7 @@ import { Search, Filter } from 'lucide-react';
 import * as courseApi from '../api/courseApi';
 import CourseCard from '../components/CourseCard';
 import { useToast } from '../components/Toast';
+import { BRAND } from '../data/constants';
 
 const CourseCatalogPage = () => {
   const { error } = useToast();
@@ -13,7 +14,7 @@ const CourseCatalogPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const categories = ['Web Development', 'Data Science', 'Mobile App', 'Design', 'Business'];
+  const categories = ['AI & Productivity', 'Research', 'Knowledge Management', 'Building', 'Career'];
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -42,12 +43,12 @@ const CourseCatalogPage = () => {
   }, [searchTerm, selectedCategory, currentPage, error]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-brand-bg">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 py-8">
+      <div className="bg-brand-surface border-b border-white/[0.08] py-8">
         <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Explore Courses</h1>
-          <p className="text-gray-600">Discover and learn from industry experts</p>
+          <h1 className="text-3xl font-bold text-white font-syne mb-2">Explore Programs</h1>
+          <p className="text-text-muted">{BRAND.tagline}</p>
         </div>
       </div>
 
@@ -56,7 +57,7 @@ const CourseCatalogPage = () => {
         {/* Search Bar */}
         <div className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-3 w-5 h-5 text-text-muted" />
             <input
               type="text"
               placeholder="Search courses by title..."
@@ -65,7 +66,7 @@ const CourseCatalogPage = () => {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="input-field pl-10 w-full"
+              className="w-full pl-10 px-4 py-3 bg-brand-bg border border-white/[0.1] rounded-xl text-white placeholder-text-muted text-sm focus:outline-none focus:border-accent transition-colors"
             />
           </div>
         </div>
@@ -73,8 +74,8 @@ const CourseCatalogPage = () => {
         {/* Category Filter */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <Filter className="w-5 h-5 text-gray-600" />
-            <h3 className="font-semibold text-gray-900">Categories</h3>
+            <Filter className="w-5 h-5 text-text-muted" />
+            <h3 className="font-semibold text-white text-sm">Categories</h3>
           </div>
           <div className="flex flex-wrap gap-3">
             <button
@@ -82,10 +83,10 @@ const CourseCatalogPage = () => {
                 setSelectedCategory('');
                 setCurrentPage(1);
               }}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
                 selectedCategory === ''
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  ? 'bg-accent text-brand-bg'
+                  : 'bg-white/[0.04] text-text-secondary border border-white/[0.08] hover:bg-white/[0.08]'
               }`}
             >
               All Categories
@@ -97,10 +98,10 @@ const CourseCatalogPage = () => {
                   setSelectedCategory(category);
                   setCurrentPage(1);
                 }}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
                   selectedCategory === category
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                    ? 'bg-accent text-brand-bg'
+                    : 'bg-white/[0.04] text-text-secondary border border-white/[0.08] hover:bg-white/[0.08]'
                 }`}
               >
                 {category}
@@ -128,10 +129,10 @@ const CourseCatalogPage = () => {
                 <button
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
-                  className={`px-4 py-2 rounded-lg font-medium ${
+                  className={`px-4 py-2 rounded-lg font-medium text-sm ${
                     currentPage === 1
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                      : 'bg-primary-600 text-white hover:bg-primary-700'
+                      ? 'bg-white/[0.04] text-text-muted cursor-not-allowed'
+                      : 'bg-accent text-brand-bg hover:bg-accent-hover'
                   }`}
                 >
                   Previous
@@ -154,10 +155,10 @@ const CourseCatalogPage = () => {
                       <button
                         key={pageNum}
                         onClick={() => setCurrentPage(pageNum)}
-                        className={`px-3 py-2 rounded-lg font-medium ${
+                        className={`px-3 py-2 rounded-lg font-medium text-sm ${
                           pageNum === currentPage
-                            ? 'bg-primary-600 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            ? 'bg-accent text-brand-bg'
+                            : 'bg-white/[0.04] text-text-secondary hover:bg-white/[0.08]'
                         }`}
                       >
                         {pageNum}
@@ -169,10 +170,10 @@ const CourseCatalogPage = () => {
                 <button
                   onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages}
-                  className={`px-4 py-2 rounded-lg font-medium ${
+                  className={`px-4 py-2 rounded-lg font-medium text-sm ${
                     currentPage === totalPages
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                      : 'bg-primary-600 text-white hover:bg-primary-700'
+                      ? 'bg-white/[0.04] text-text-muted cursor-not-allowed'
+                      : 'bg-accent text-brand-bg hover:bg-accent-hover'
                   }`}
                 >
                   Next
@@ -182,8 +183,8 @@ const CourseCatalogPage = () => {
           </>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">No courses found</p>
-            <p className="text-gray-500">Try adjusting your search or filters</p>
+            <p className="text-text-secondary text-lg">No courses found</p>
+            <p className="text-text-muted">Try adjusting your search or filters</p>
           </div>
         )}
       </div>
