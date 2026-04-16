@@ -19,7 +19,10 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const token = localStorage.getItem('authToken') || '';
+    // Don't kick demo users out on 401 — their token is a local mock, and
+    // the dummy-data fallback layer will handle the response anyway.
+    if (error.response?.status === 401 && !token.startsWith('demo-token-')) {
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
       window.location.href = '/login';

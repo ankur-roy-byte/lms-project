@@ -1,26 +1,40 @@
 import axiosInstance from './axiosConfig';
+import { withFallback, DUMMY_ENROLLMENTS, DUMMY_LESSONS } from './dummyData';
 
-export const enroll = async (courseId) => {
-  const response = await axiosInstance.post('/enroll', { courseId });
-  return response.data;
-};
+export const enroll = async (courseId) =>
+  withFallback(
+    async () => (await axiosInstance.post('/enroll', { courseId })).data,
+    () => ({ success: true, enrollmentId: `e${Date.now()}`, courseId })
+  );
 
-export const getMyEnrollments = async () => {
-  const response = await axiosInstance.get('/enrollments');
-  return response.data;
-};
+export const getMyEnrollments = async () =>
+  withFallback(
+    async () => (await axiosInstance.get('/enrollments')).data,
+    () => DUMMY_ENROLLMENTS
+  );
 
-export const markLessonComplete = async (enrollmentId, lessonId) => {
-  const response = await axiosInstance.post('/progress', { enrollmentId, lessonId });
-  return response.data;
-};
+export const markLessonComplete = async (enrollmentId, lessonId) =>
+  withFallback(
+    async () => (await axiosInstance.post('/progress', { enrollmentId, lessonId })).data,
+    () => ({ success: true, enrollmentId, lessonId })
+  );
 
-export const getCourseProgress = async (courseId) => {
-  const response = await axiosInstance.get(`/progress/${courseId}`);
-  return response.data;
-};
+export const getCourseProgress = async (courseId) =>
+  withFallback(
+    async () => (await axiosInstance.get(`/progress/${courseId}`)).data,
+    () => {
+      const enr = DUMMY_ENROLLMENTS.find((e) => e.courseId === courseId);
+      const lessons = DUMMY_LESSONS[courseId] || [];
+      return {
+        progressPercentage: enr?.progressPercentage ?? 0,
+        completedLessons: enr?.completedLessons ?? [],
+        totalLessons: lessons.length,
+      };
+    }
+  );
 
-export const unenroll = async (courseId) => {
-  const response = await axiosInstance.post('/unenroll', { courseId });
-  return response.data;
-};
+export const unenroll = async (courseId) =>
+  withFallback(
+    async () => (await axiosInstance.post('/unenroll', { courseId })).data,
+    () => ({ success: true, courseId })
+  );
