@@ -24,7 +24,26 @@ import {
   ArrowRight,
   Play,
   Flame,
+  Clock,
+  Star,
+  Trophy,
+  Target,
+  TrendingUp,
 } from 'lucide-react';
+
+// ── Inline mini-components ──────────────────────────────────────
+
+const StatPill = ({ icon: Icon, label, value, iconClass }) => (
+  <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-4 flex flex-col gap-2">
+    <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${iconClass}`}>
+      <Icon className="w-4 h-4" />
+    </div>
+    <div className="font-syne text-2xl font-extrabold text-white leading-none">{value}</div>
+    <div className="text-[11px] text-text-muted">{label}</div>
+  </div>
+);
+
+// ── Main component ──────────────────────────────────────────────
 
 const DashboardPage = () => {
   const { user } = useAuth();
@@ -74,106 +93,189 @@ const DashboardPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-brand-bg">
-        <div className="spinner"></div>
+        <div className="spinner" />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-brand-bg">
-      <div className="max-w-6xl mx-auto px-6 py-6">
-        {/* Greeting */}
-        <div className="mb-5">
-          <h2 className="font-syne text-xl font-extrabold text-white">Good morning, {displayName}! 👋</h2>
-          <p className="text-sm text-text-muted mt-1">You have 1 lesson remaining this week. Keep going!</p>
-        </div>
+      <div className="max-w-6xl mx-auto px-6 py-6 space-y-6">
 
-        {/* Student Dashboard */}
+        {/* ── STUDENT DASHBOARD ───────────────────────────────── */}
         {(!user?.role || user?.role === 'STUDENT') && (
           <>
-            {/* Stats Row */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-              <div className="card">
-                <div className="font-syne text-2xl font-extrabold text-white">
-                  <span className="text-accent">{stats.modulesCompleted}</span>/{stats.totalModules}
+            {/* Gradient Welcome Banner */}
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1a1060] via-[#1e1a6e] to-[#0f1a3e] border border-white/[0.08] p-6 md:p-8">
+              {/* Background pattern */}
+              <div
+                className="absolute inset-0 opacity-[0.06]"
+                style={{
+                  backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1px)',
+                  backgroundSize: '24px 24px',
+                }}
+              />
+              {/* Glow */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+
+              <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <p className="text-[11px] font-semibold text-accent/80 uppercase tracking-widest mb-1 font-syne">
+                    {BRAND.shortName} · Dashboard
+                  </p>
+                  <h2 className="font-syne text-2xl md:text-3xl font-extrabold text-white leading-tight mb-1">
+                    Good morning, {displayName}! 👋
+                  </h2>
+                  <p className="text-sm text-white/50">
+                    You have 1 lesson remaining this week. Keep the momentum going!
+                  </p>
                 </div>
-                <div className="text-[11px] text-text-muted mt-1">Modules Done</div>
-                <div className="progress-bar-track mt-2">
-                  <div className="progress-bar-fill" style={{ width: `${(stats.modulesCompleted / stats.totalModules) * 100}%` }}></div>
+
+                {/* Streak badge */}
+                <div className="flex-shrink-0 flex items-center gap-2 bg-white/[0.08] border border-white/[0.12] rounded-2xl px-5 py-3">
+                  <Flame className="w-6 h-6 text-orange-400" />
+                  <div>
+                    <div className="font-syne text-2xl font-extrabold text-white leading-none">
+                      {stats.daysStreak}
+                    </div>
+                    <div className="text-[10px] text-white/50 mt-0.5">day streak</div>
+                  </div>
                 </div>
               </div>
-              <div className="card">
-                <div className="font-syne text-2xl font-extrabold text-white">
-                  <span className="text-accent">{stats.lessonsCompleted}</span>
+
+              {/* Overall progress strip */}
+              <div className="relative mt-5">
+                <div className="flex justify-between items-center mb-1.5">
+                  <span className="text-[11px] text-white/50">Overall Progress</span>
+                  <span className="text-[12px] font-bold text-accent font-syne">{stats.overallProgress}%</span>
                 </div>
-                <div className="text-[11px] text-text-muted mt-1">Lessons Completed</div>
-              </div>
-              <div className="card">
-                <div className="font-syne text-2xl font-extrabold text-white">
-                  <span className="text-accent">{stats.quizzesPassed}</span>
+                <div className="h-2 bg-white/[0.08] rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-accent to-amber-300 rounded-full transition-all duration-700"
+                    style={{ width: `${stats.overallProgress}%` }}
+                  />
                 </div>
-                <div className="text-[11px] text-text-muted mt-1">Quizzes Passed</div>
-              </div>
-              <div className="card">
-                <div className="font-syne text-2xl font-extrabold text-white">
-                  <span className="text-accent">{stats.daysStreak}</span>
-                </div>
-                <div className="text-[11px] text-text-muted mt-1">Days Streak 🔥</div>
               </div>
             </div>
 
-            {/* Continue Where You Left Off */}
-            <div className="font-syne text-sm font-bold text-white mb-3">Continue Where You Left Off</div>
-            <div
-              className="bg-accent/[0.08] border border-accent/20 rounded-[14px] p-[18px] flex items-center gap-4 mb-5 cursor-pointer hover:bg-accent/[0.12] transition"
-              onClick={() => navigate('/courses/1')}
-            >
-              <div className="w-16 h-12 rounded-lg bg-gradient-to-br from-[#1a2540] to-[#243050] flex items-center justify-center text-xl flex-shrink-0">
-                💻
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-semibold text-white">Module {CURRENT_LESSON.moduleNumber} — {CURRENT_LESSON.moduleTitle}</p>
-                <span className="text-[11px] text-text-muted">Lesson {CURRENT_LESSON.lessonNumber}: {CURRENT_LESSON.lessonTitle}</span>
-                <div className="progress-bar-track mt-[6px]">
-                  <div className="progress-bar-fill" style={{ width: `${stats.overallProgress}%` }}></div>
+            {/* Stats Row */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <StatPill
+                icon={BookOpen}
+                label="Modules Done"
+                value={`${stats.modulesCompleted}/${stats.totalModules}`}
+                iconClass="bg-blue-500/10 text-blue-400"
+              />
+              <StatPill
+                icon={Zap}
+                label="Lessons Completed"
+                value={stats.lessonsCompleted}
+                iconClass="bg-accent/10 text-accent"
+              />
+              <StatPill
+                icon={Target}
+                label="Quizzes Passed"
+                value={stats.quizzesPassed}
+                iconClass="bg-purple-500/10 text-purple-400"
+              />
+              <StatPill
+                icon={Trophy}
+                label="Certificates"
+                value={certificates.length || 0}
+                iconClass="bg-success/10 text-success"
+              />
+            </div>
+
+            {/* Continue Learning Card */}
+            <div>
+              <h3 className="font-syne text-sm font-bold text-white mb-3 flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-accent" />
+                Continue Where You Left Off
+              </h3>
+              <div
+                className="group bg-white/[0.04] border border-white/[0.08] hover:border-accent/30 hover:bg-white/[0.06] rounded-2xl p-5 flex items-center gap-5 cursor-pointer transition-all duration-300 hover:shadow-[0_8px_32px_rgba(245,158,11,0.06)]"
+                onClick={() => navigate('/courses/1')}
+              >
+                {/* Thumbnail */}
+                <div className="w-20 h-14 rounded-xl bg-gradient-to-br from-[#1a2540] to-[#243050] flex items-center justify-center text-2xl flex-shrink-0 border border-white/[0.06]">
+                  🔬
                 </div>
-              </div>
-              <div className="w-9 h-9 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-                <Play className="w-3 h-3 text-brand-bg fill-brand-bg" />
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] text-text-muted mb-0.5">
+                    Phase {CURRENT_LESSON.moduleNumber} · {CURRENT_LESSON.moduleTitle}
+                  </p>
+                  <p className="text-sm font-semibold text-white truncate mb-2">
+                    Lesson {CURRENT_LESSON.lessonNumber}: {CURRENT_LESSON.lessonTitle}
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-accent to-amber-300 rounded-full transition-all duration-500"
+                        style={{ width: `${stats.overallProgress}%` }}
+                      />
+                    </div>
+                    <span className="text-[11px] font-bold text-accent font-syne flex-shrink-0">
+                      {stats.overallProgress}%
+                    </span>
+                  </div>
+                </div>
+
+                {/* Play button */}
+                <div className="w-11 h-11 rounded-full bg-accent group-hover:bg-accent-hover flex items-center justify-center flex-shrink-0 transition-colors shadow-[0_0_16px_rgba(245,158,11,0.3)]">
+                  <Play className="w-4 h-4 text-brand-bg fill-brand-bg ml-0.5" />
+                </div>
               </div>
             </div>
 
             {/* Recent Activity */}
-            <div className="font-syne text-sm font-bold text-white mb-3">Recent Activity</div>
-            <div className="flex flex-col gap-2 mb-5">
-              {RECENT_ACTIVITY.map((activity) => (
-                <div key={activity.id} className="flex items-center gap-3 bg-white/[0.03] rounded-[10px] p-3">
-                  <div className={`w-[34px] h-[34px] rounded-lg flex items-center justify-center text-sm flex-shrink-0 ${
-                    activity.iconType === 'done' ? 'bg-success/[0.12]' : 'bg-accent/[0.12]'
-                  }`}>
-                    {activity.icon}
+            <div>
+              <h3 className="font-syne text-sm font-bold text-white mb-3 flex items-center gap-2">
+                <Clock className="w-4 h-4 text-accent" />
+                Recent Activity
+              </h3>
+              <div className="flex flex-col gap-2">
+                {RECENT_ACTIVITY.map((activity) => (
+                  <div
+                    key={activity.id}
+                    className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.06] rounded-xl p-3.5 hover:bg-white/[0.05] transition-colors"
+                  >
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm flex-shrink-0 font-semibold ${
+                      activity.iconType === 'done'
+                        ? 'bg-success/[0.12] text-success'
+                        : 'bg-accent/[0.12] text-accent'
+                    }`}>
+                      {activity.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] text-white font-medium truncate">{activity.title}</p>
+                      <p className="text-[11px] text-text-muted">{activity.subtitle}</p>
+                    </div>
+                    <span className={`flex-shrink-0 text-[10px] px-2.5 py-1 rounded-full font-bold font-syne ${
+                      activity.badgeType === 'done'
+                        ? 'bg-success/[0.12] text-success border border-success/20'
+                        : 'bg-accent/[0.12] text-accent border border-accent/20'
+                    }`}>
+                      {activity.badge}
+                    </span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] text-text-primary font-medium truncate">{activity.title}</p>
-                    <span className="text-[11px] text-text-muted">{activity.subtitle}</span>
-                  </div>
-                  <span className={`text-[10px] px-[9px] py-[3px] rounded-[10px] font-semibold font-syne ${
-                    activity.badgeType === 'done'
-                      ? 'bg-success/[0.12] text-success'
-                      : 'bg-accent/[0.12] text-accent'
-                  }`}>
-                    {activity.badge}
-                  </span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             {/* Enrolled Courses */}
             {enrollments.length > 0 && (
-              <div className="mb-5">
+              <div>
                 <div className="flex items-center justify-between mb-3">
-                  <div className="font-syne text-sm font-bold text-white">My Courses</div>
-                  <Link to="/courses" className="flex items-center gap-1 text-accent hover:text-accent-hover text-xs font-medium">
+                  <h3 className="font-syne text-sm font-bold text-white flex items-center gap-2">
+                    <Star className="w-4 h-4 text-accent" />
+                    My Courses
+                  </h3>
+                  <Link
+                    to="/courses"
+                    className="flex items-center gap-1 text-accent hover:text-accent-hover text-xs font-semibold font-syne transition-colors"
+                  >
                     Explore More <ArrowRight className="w-3 h-3" />
                   </Link>
                 </div>
@@ -192,8 +294,11 @@ const DashboardPage = () => {
 
             {/* Upcoming Sessions */}
             {dashboardData?.upcomingSessions && dashboardData.upcomingSessions.length > 0 && (
-              <div className="mb-5">
-                <div className="font-syne text-sm font-bold text-white mb-3">Upcoming Sessions</div>
+              <div>
+                <h3 className="font-syne text-sm font-bold text-white mb-3 flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-accent" />
+                  Upcoming Sessions
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {dashboardData.upcomingSessions.map((session) => (
                     <LiveSessionCard
@@ -210,52 +315,122 @@ const DashboardPage = () => {
           </>
         )}
 
-        {/* Instructor Dashboard */}
+        {/* ── INSTRUCTOR DASHBOARD ────────────────────────────── */}
         {user?.role === 'INSTRUCTOR' && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+            {/* Welcome */}
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0f1a30] via-[#162040] to-[#0a1020] border border-white/[0.08] p-6">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+              <p className="text-[11px] font-semibold text-blue-400/80 uppercase tracking-widest mb-1 font-syne">Instructor Panel</p>
+              <h2 className="font-syne text-2xl font-extrabold text-white mb-1">Welcome back, {displayName}!</h2>
+              <p className="text-sm text-white/40">Manage your courses and track student progress.</p>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <StatsCard icon={BookOpen} label="My Courses" value={dashboardData?.courseCount || 0} color="primary" />
               <StatsCard icon={Users} label="Total Students" value={dashboardData?.studentCount || 0} color="blue" />
               <StatsCard icon={BarChart3} label="Revenue" value={`₹${dashboardData?.revenue || 0}`} color="green" />
             </div>
-            <div className="card mb-5">
-              <div className="font-syne text-sm font-bold text-white mb-3">Quick Actions</div>
+
+            {/* Quick Actions */}
+            <div className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-5">
+              <h3 className="font-syne text-sm font-bold text-white mb-4 flex items-center gap-2">
+                <Zap className="w-4 h-4 text-accent" />
+                Quick Actions
+              </h3>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Link to="/create-course" className="btn-primary text-sm">Create New Course</Link>
-                <Link to="/live-sessions" className="btn-outline text-sm">Schedule Session</Link>
+                <Link
+                  to="/create-course"
+                  className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-brand-bg px-5 py-3 rounded-xl text-sm font-bold font-syne transition-colors"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  Create New Course
+                </Link>
+                <Link
+                  to="/live-sessions"
+                  className="flex-1 flex items-center justify-center gap-2 bg-white/[0.06] hover:bg-white/[0.09] text-white border border-white/[0.1] px-5 py-3 rounded-xl text-sm font-bold font-syne transition-colors"
+                >
+                  <Zap className="w-4 h-4" />
+                  Schedule Session
+                </Link>
               </div>
             </div>
           </>
         )}
 
-        {/* Admin Dashboard */}
+        {/* ── ADMIN DASHBOARD ─────────────────────────────────── */}
         {user?.role === 'ADMIN' && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+            {/* Welcome */}
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#150f30] via-[#1e1050] to-[#0a0a20] border border-white/[0.08] p-6">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+              <p className="text-[11px] font-semibold text-purple-400/80 uppercase tracking-widest mb-1 font-syne">Admin Console</p>
+              <h2 className="font-syne text-2xl font-extrabold text-white mb-1">Platform Overview</h2>
+              <p className="text-sm text-white/40">Monitor all activity and manage the platform.</p>
+            </div>
+
+            {/* 4 Stats cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <StatsCard icon={Users} label="Total Users" value={dashboardData?.totalUsers || 0} color="blue" />
               <StatsCard icon={BookOpen} label="Total Courses" value={dashboardData?.totalCourses || 0} color="purple" />
               <StatsCard icon={Award} label="Enrollments" value={dashboardData?.totalEnrollments || 0} color="green" />
               <StatsCard icon={BarChart3} label="Revenue" value={`₹${dashboardData?.totalRevenue || 0}`} color="orange" />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
-              <Link to="/admin?tab=users" className="card hover:bg-white/[0.06] transition">
-                <Users className="w-6 h-6 text-blue-400 mb-2" />
-                <h3 className="font-bold text-white text-sm mb-1">Manage Users</h3>
-                <p className="text-xs text-text-muted">View and manage all users</p>
+
+            {/* 3 Action cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link
+                to="/admin?tab=users"
+                className="group bg-white/[0.04] border border-white/[0.08] hover:border-blue-400/30 hover:bg-white/[0.06] rounded-2xl p-5 transition-all duration-300"
+              >
+                <div className="w-10 h-10 rounded-xl bg-blue-400/10 flex items-center justify-center mb-4">
+                  <Users className="w-5 h-5 text-blue-400" />
+                </div>
+                <h3 className="font-syne font-bold text-white text-sm mb-1 group-hover:text-blue-300 transition-colors">
+                  Manage Users
+                </h3>
+                <p className="text-xs text-text-muted">View and manage all platform users</p>
+                <div className="flex items-center gap-1 text-blue-400 text-xs font-semibold mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Open <ArrowRight className="w-3 h-3" />
+                </div>
               </Link>
-              <Link to="/admin?tab=courses" className="card hover:bg-white/[0.06] transition">
-                <BookOpen className="w-6 h-6 text-purple-400 mb-2" />
-                <h3 className="font-bold text-white text-sm mb-1">Manage Courses</h3>
-                <p className="text-xs text-text-muted">Review and manage courses</p>
+
+              <Link
+                to="/admin?tab=courses"
+                className="group bg-white/[0.04] border border-white/[0.08] hover:border-purple-400/30 hover:bg-white/[0.06] rounded-2xl p-5 transition-all duration-300"
+              >
+                <div className="w-10 h-10 rounded-xl bg-purple-400/10 flex items-center justify-center mb-4">
+                  <BookOpen className="w-5 h-5 text-purple-400" />
+                </div>
+                <h3 className="font-syne font-bold text-white text-sm mb-1 group-hover:text-purple-300 transition-colors">
+                  Manage Courses
+                </h3>
+                <p className="text-xs text-text-muted">Review and approve course content</p>
+                <div className="flex items-center gap-1 text-purple-400 text-xs font-semibold mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Open <ArrowRight className="w-3 h-3" />
+                </div>
               </Link>
-              <Link to="/admin?tab=payments" className="card hover:bg-white/[0.06] transition">
-                <BarChart3 className="w-6 h-6 text-green-400 mb-2" />
-                <h3 className="font-bold text-white text-sm mb-1">View Payments</h3>
-                <p className="text-xs text-text-muted">Review transaction history</p>
+
+              <Link
+                to="/admin?tab=payments"
+                className="group bg-white/[0.04] border border-white/[0.08] hover:border-success/30 hover:bg-white/[0.06] rounded-2xl p-5 transition-all duration-300"
+              >
+                <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center mb-4">
+                  <BarChart3 className="w-5 h-5 text-success" />
+                </div>
+                <h3 className="font-syne font-bold text-white text-sm mb-1 group-hover:text-green-300 transition-colors">
+                  View Payments
+                </h3>
+                <p className="text-xs text-text-muted">Review all transaction history</p>
+                <div className="flex items-center gap-1 text-success text-xs font-semibold mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Open <ArrowRight className="w-3 h-3" />
+                </div>
               </Link>
             </div>
           </>
         )}
+
       </div>
     </div>
   );

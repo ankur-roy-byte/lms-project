@@ -13,7 +13,10 @@
       "Bash(chmod +x \"A:/Lms project/Lms for college/lms-project/frontend/start.sh\")",
       "Bash(bash \"A:/Lms project/Lms for college/lms-project/frontend/start.sh\")",
       "Bash(taskkill //PID 11744 //F)",
-      "Bash(python -c ':*)"
+      "Bash(python -c ':*)",
+      "WebFetch(domain:www.mygreatlearning.com)",
+      "Bash(python3 -c ':*)",
+      "Bash(node -e \"const fs=require\\('fs'\\);console.log\\(fs.readFileSync\\('A:\\\\\\\\\\\\\\\\Lms project\\\\\\\\\\\\\\\\Lms for college\\\\\\\\\\\\\\\\lms-project\\\\\\\\\\\\\\\\frontend\\\\\\\\\\\\\\\\src\\\\\\\\\\\\\\\\components\\\\\\\\\\\\\\\\CourseCard.jsx','utf8'\\).slice\\(0,30\\)\\)\")"
     ]
   }
 }

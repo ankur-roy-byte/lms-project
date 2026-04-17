@@ -285,9 +285,18 @@ export const getCurrentRole = () => {
 };
 
 // ---- FALLBACK HELPER ----
-// Run `realCall()` — if it throws (backend offline, CORS, 404…), return `dummy`.
-// Also short-circuits to dummy immediately when a demo token is present.
+// STATIC MODE: Always returns dummy data immediately — no network calls.
+// To re-enable real API calls later, flip STATIC_MODE to false.
+// The `realCall` function is preserved for future use but never executed.
+const STATIC_MODE = true;
+
 export const withFallback = async (realCall, dummy) => {
+  if (STATIC_MODE) {
+    // Pure frontend demo — no backend needed.
+    return typeof dummy === 'function' ? dummy() : dummy;
+  }
+
+  // --- REAL API PATH (disabled while STATIC_MODE = true) ---
   const token = (typeof localStorage !== 'undefined' && localStorage.getItem('authToken')) || '';
   if (token.startsWith('demo-token-')) {
     return typeof dummy === 'function' ? dummy() : dummy;

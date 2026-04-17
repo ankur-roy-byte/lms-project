@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, BookOpen, Users, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import * as courseApi from '../api/courseApi';
 import CourseCard from '../components/CourseCard';
 import { useToast } from '../components/Toast';
 import { BRAND } from '../data/constants';
+
+const CATEGORY_EMOJIS = {
+  'AI & Productivity': '🤖',
+  'Research': '🔬',
+  'Knowledge Management': '🧠',
+  'Building': '⚙️',
+  'Career': '🚀',
+};
 
 const CourseCatalogPage = () => {
   const { error } = useToast();
@@ -45,20 +53,52 @@ const CourseCatalogPage = () => {
 
   return (
     <div className="min-h-screen bg-brand-bg">
-      {/* Header */}
-      <div className="bg-brand-surface border-b border-white/[0.08] py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-3xl font-bold text-white font-syne mb-2">Explore Programs</h1>
-          <p className="text-text-muted">{BRAND.tagline}</p>
+      {/* Hero Bar */}
+      <div className="bg-brand-surface border-b border-white/[0.08]">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <p className="text-[11px] font-semibold text-accent uppercase tracking-widest mb-2 font-syne">
+                {BRAND.shortName} · Learning Hub
+              </p>
+              <h1 className="text-3xl font-extrabold text-white font-syne mb-1">
+                Explore Programs
+              </h1>
+              <p className="text-sm text-text-muted">{BRAND.tagline}</p>
+            </div>
+
+            {/* Stats row */}
+            <div className="flex items-center gap-6 flex-shrink-0">
+              <div className="flex items-center gap-2 text-sm text-text-secondary">
+                <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center">
+                  <BookOpen className="w-3.5 h-3.5 text-accent" />
+                </div>
+                <span><span className="font-bold text-white font-syne">5</span> Programs</span>
+              </div>
+              <div className="w-px h-6 bg-white/[0.08]" />
+              <div className="flex items-center gap-2 text-sm text-text-secondary">
+                <div className="w-7 h-7 rounded-lg bg-success/10 flex items-center justify-center">
+                  <Users className="w-3.5 h-3.5 text-success" />
+                </div>
+                <span><span className="font-bold text-white font-syne">487</span> Learners</span>
+              </div>
+              <div className="w-px h-6 bg-white/[0.08]" />
+              <div className="flex items-center gap-2 text-sm text-text-secondary">
+                <div className="w-7 h-7 rounded-lg bg-blue-400/10 flex items-center justify-center">
+                  <Clock className="w-3.5 h-3.5 text-blue-400" />
+                </div>
+                <span><span className="font-bold text-white font-syne">20+</span> Hours</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Filters & Search */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Search Bar */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Search */}
         <div className="mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-3 w-5 h-5 text-text-muted" />
+          <div className="relative max-w-xl">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
             <input
               type="text"
               placeholder="Search courses by title..."
@@ -67,44 +107,39 @@ const CourseCatalogPage = () => {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-10 px-4 py-3 bg-brand-bg border border-white/[0.1] rounded-xl text-white placeholder-text-muted text-sm focus:outline-none focus:border-accent transition-colors"
+              className="w-full pl-11 pr-4 py-3 bg-brand-surface border border-white/[0.1] rounded-xl text-white placeholder-text-muted text-sm focus:outline-none focus:border-accent/50 transition-colors"
             />
           </div>
         </div>
 
-        {/* Category Filter */}
+        {/* Category pill tabs */}
         <div className="mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <Filter className="w-5 h-5 text-text-muted" />
-            <h3 className="font-semibold text-white text-sm">Categories</h3>
+          <div className="flex items-center gap-2 mb-3">
+            <Filter className="w-3.5 h-3.5 text-text-muted" />
+            <span className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Filter by category</span>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => {
-                setSelectedCategory('');
-                setCurrentPage(1);
-              }}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+              onClick={() => { setSelectedCategory(''); setCurrentPage(1); }}
+              className={`px-4 py-2 rounded-full text-[12px] font-semibold font-syne transition-all duration-200 ${
                 selectedCategory === ''
-                  ? 'bg-accent text-brand-bg'
-                  : 'bg-white/[0.04] text-text-secondary border border-white/[0.08] hover:bg-white/[0.08]'
+                  ? 'bg-accent text-brand-bg shadow-[0_0_16px_rgba(245,158,11,0.25)]'
+                  : 'bg-white/[0.05] text-text-secondary border border-white/[0.08] hover:bg-white/[0.08] hover:text-white'
               }`}
             >
-              All Categories
+              All
             </button>
             {categories.map((category) => (
               <button
                 key={category}
-                onClick={() => {
-                  setSelectedCategory(category);
-                  setCurrentPage(1);
-                }}
-                className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                onClick={() => { setSelectedCategory(category); setCurrentPage(1); }}
+                className={`px-4 py-2 rounded-full text-[12px] font-semibold font-syne flex items-center gap-1.5 transition-all duration-200 ${
                   selectedCategory === category
-                    ? 'bg-accent text-brand-bg'
-                    : 'bg-white/[0.04] text-text-secondary border border-white/[0.08] hover:bg-white/[0.08]'
+                    ? 'bg-accent text-brand-bg shadow-[0_0_16px_rgba(245,158,11,0.25)]'
+                    : 'bg-white/[0.05] text-text-secondary border border-white/[0.08] hover:bg-white/[0.08] hover:text-white'
                 }`}
               >
+                <span>{CATEGORY_EMOJIS[category]}</span>
                 {category}
               </button>
             ))}
@@ -114,10 +149,16 @@ const CourseCatalogPage = () => {
         {/* Courses Grid */}
         {loading ? (
           <div className="flex items-center justify-center min-h-96">
-            <div className="spinner"></div>
+            <div className="spinner" />
           </div>
         ) : courses.length > 0 ? (
           <>
+            {/* Result count */}
+            <p className="text-[12px] text-text-muted mb-5">
+              Showing <span className="text-white font-semibold">{courses.length}</span> program{courses.length !== 1 ? 's' : ''}
+              {selectedCategory && <span> in <span className="text-accent">{selectedCategory}</span></span>}
+            </p>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {courses.map((course) => (
                 <CourseCard key={course.id} course={course} />
@@ -130,13 +171,13 @@ const CourseCatalogPage = () => {
                 <button
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
-                  className={`px-4 py-2 rounded-lg font-medium text-sm ${
+                  className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${
                     currentPage === 1
-                      ? 'bg-white/[0.04] text-text-muted cursor-not-allowed'
-                      : 'bg-accent text-brand-bg hover:bg-accent-hover'
+                      ? 'bg-white/[0.03] text-text-muted cursor-not-allowed'
+                      : 'bg-white/[0.06] text-white hover:bg-white/[0.1] border border-white/[0.08]'
                   }`}
                 >
-                  Previous
+                  <ChevronLeft className="w-4 h-4" />
                 </button>
 
                 <div className="flex items-center gap-1">
@@ -156,10 +197,10 @@ const CourseCatalogPage = () => {
                       <button
                         key={pageNum}
                         onClick={() => setCurrentPage(pageNum)}
-                        className={`px-3 py-2 rounded-lg font-medium text-sm ${
+                        className={`w-9 h-9 rounded-lg font-semibold text-sm font-syne transition-all duration-200 ${
                           pageNum === currentPage
-                            ? 'bg-accent text-brand-bg'
-                            : 'bg-white/[0.04] text-text-secondary hover:bg-white/[0.08]'
+                            ? 'bg-accent text-brand-bg shadow-[0_0_12px_rgba(245,158,11,0.2)]'
+                            : 'bg-white/[0.04] text-text-secondary border border-white/[0.08] hover:bg-white/[0.08] hover:text-white'
                         }`}
                       >
                         {pageNum}
@@ -171,21 +212,37 @@ const CourseCatalogPage = () => {
                 <button
                   onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages}
-                  className={`px-4 py-2 rounded-lg font-medium text-sm ${
+                  className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${
                     currentPage === totalPages
-                      ? 'bg-white/[0.04] text-text-muted cursor-not-allowed'
-                      : 'bg-accent text-brand-bg hover:bg-accent-hover'
+                      ? 'bg-white/[0.03] text-text-muted cursor-not-allowed'
+                      : 'bg-white/[0.06] text-white hover:bg-white/[0.1] border border-white/[0.08]'
                   }`}
                 >
-                  Next
+                  <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             )}
           </>
         ) : (
-          <div className="text-center py-12">
-            <p className="text-text-secondary text-lg">No courses found</p>
-            <p className="text-text-muted">Try adjusting your search or filters</p>
+          /* Empty state */
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="text-6xl mb-5 select-none">
+              {selectedCategory ? CATEGORY_EMOJIS[selectedCategory] || '🔍' : '🔍'}
+            </div>
+            <h3 className="font-syne font-bold text-white text-lg mb-2">No programs found</h3>
+            <p className="text-text-muted text-sm max-w-xs">
+              {searchTerm
+                ? `No results for "${searchTerm}". Try different keywords or clear the search.`
+                : 'No programs available in this category yet.'}
+            </p>
+            {(searchTerm || selectedCategory) && (
+              <button
+                onClick={() => { setSearchTerm(''); setSelectedCategory(''); setCurrentPage(1); }}
+                className="mt-5 px-5 py-2.5 rounded-xl bg-accent/10 border border-accent/20 text-accent text-sm font-semibold font-syne hover:bg-accent/20 transition-colors"
+              >
+                Clear filters
+              </button>
+            )}
           </div>
         )}
       </div>
